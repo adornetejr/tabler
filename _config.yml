@@ -1,46 +1,23 @@
-title: Tabler
-description: tabler.github.io - a responsive, flat and full featured admin template
+source: pages
+destination: tmp
 
-source: src
-host: 0.0.0.0
+title: UI Kit
+description: Premium and Open Source dashboard template with responsive and high quality UI.
+
+debug: true
 
 plugins:
-  - jekyll-tidy
-  - jekyll-toc
-  - jekyll-random
+- jekyll-random
+- jekyll-tidy
+- jekyll-timeago
+- jekyll-redirect-from
+- jekyll-include-cache
 
-exclude:
-  - regenerate-images.sh
-  - .editorconfig
-  - buddy.yml
-  - package.json
-  - gulpfile.js
-  - start.sh
-  - Gemfile
-  - Gemfile.lock
-  - .git
-  - .idea
-  - .gitignore
-  - node_modules/
-  - .DS_Store
-  - .sass-cache/
-  - .asset-cache/
-  - push-to-repo.sh
-  - commits.sh
-  - assets/scss/*
-  - assets/plugins/**/*.scss
-
-collections:
-  docs:
-    output: true
-
-defaults:
-  - scope:
-      path: ""
-      type: docs
-    values:
-      layout: docs
-
+keep_files:
+- css/ui-kit.css
+- css/dark.css
+- css/rtl.css
+#- js/ui-kit.js
 
 markdown: kramdown
 highlighter: rouge
@@ -52,30 +29,35 @@ kramdown:
     span:
       line_numbers: false
 
-toc:
-  min_level: 2
-  max_level: 3
-
 jekyll_tidy:
   compress_html: false
   ignore_env: development
 
-base_color: '#467fcf'
-github_url: https://github.com/tabler/tabler
 
-author:
-   name: codecalm.net
-   url: https://codecalm.net
+collections:
+  docs:
+    output: true
+  changelog:
+    output: false
 
-docs-menu:
-  - title: Getting started
-    pages: [index]
-  - title: Components
-    pages: [alerts, avatars, buttons, colors, cards, charts, form-components, tags, typography]
+defaults:
+  -
+    scope:
+      type: pages
+    values:
+      layout: default
+      nav-position: top
+  -
+    scope:
+      type: docs
+    values:
+      layout: docs
+      nav-position: top
+
 
 colors:
   blue:
-    hex: '#467fcf'
+    hex: '#206bc4'
     name: Blue
   azure:
     hex: '#45aaf2'
@@ -90,7 +72,7 @@ colors:
     hex: '#f66d9b'
     name: Pink
   red:
-    hex: '#e74c3c'
+    hex: '#fa4654'
     name: Red
   orange:
     hex: '#fd9644'
@@ -113,115 +95,61 @@ colors:
   gray:
     hex: '#868e96'
     name: Gray
-  gray-dark:
-    hex: '#343a40'
-    name: Dark gray
+  dark:
+    hex: '#354051'
+    name: Dark
 
-theme-colors:
-  primary:
-    hex: '#467fcf'
-    name: Primary
-  secondary:
-    hex: '#868e96'
-    name: Secondary
-  success:
-    hex: '#38c172'
-    name: Success
-  info:
-    hex: '#17a2b8'
-    name: Info
-  warning:
-    hex: '#f8b700'
-    name: Warning
-  danger:
-    hex: '#f90049'
-    name: Danger
-#  light:
-#    hex: '#f8f9fa'
-#    name: Light
-#  dark:
-#    hex: '#343a40'
-#    name: Dark
+variants:
+  - name: success
+    icon: check
+  - name: info
+    icon: info
+  - name: warning
+    icon: alert-triangle
+  - name: danger
+    icon: x-octagon
 
-color_variants:
-  - name: 'Darkest'
-    suffix: -darkest
-  - name: 'Darker'
-    suffix: -darker
-  - name: 'Dark'
-    suffix: -dark
-  - name: 'Default'
-    suffix: ''
-  - name: 'Light'
-    suffix: -light
-  - name: 'Lighter'
-    suffix: -lighter
-  - name: 'Lightest'
-    suffix: -lightest
+button_variants:
+  - name: primary
+    title: Primary
+  - name: secondary
+    title: Secondary
+  - name: success
+    title: Success
+  - name: info
+    title: Info
+  - name: warning
+    title: Warning
+  - name: danger
+    title: Danger
 
-social-buttons:
-  facebook:
-    icon: fa fa-facebook
-    name: Facebook
-  twitter:
-    icon: fa fa-twitter
-    name: Twitter
-  google:
-    icon: fa fa-google
-    name: Google
-  youtube:
-    icon: fa fa-youtube
-    name: Youtube
-  vimeo:
-    icon: fa fa-vimeo
-    name: Vimeo
-  dribbble:
-    icon: fa fa-dribbble
-    name: Dribble
-  github:
-    icon: fa fa-github
-    name: Github
-  instagram:
-    icon: fa fa-instagram
-    name: Instagram
-  pinterest:
-    icon: fa fa-pinterest
-    name: Pinterest
-  vk:
-    icon: fa fa-vk
-    name: VKontakte
-  rss:
-    icon: fa fa-rss
-    name: RSS
-  flickr:
-    icon: fa fa-flickr
-    name: Flickr
-  bitbucket:
-    icon: fa fa-bitbucket
-    name: Bitbucket
+socials:
+  - name: facebook
+    title: Facebook
+  - name: twitter
+    title: Twitter
+  - name: google
+    title: Google
+  - name: youtube
+    title: Youtube
+  - name: vimeo
+    title: Vimeo
+  - name: dribbble
+    title: Dribbble
+  - name: github
+    title: Github
+  - name: instagram
+    title: Instagram
+  - name: pinterest
+    title: Pinterest
+  - name: vk
+    title: Vk
+  - name: rss
+    title: Rss
+  - name: flickr
+    title: Flickr
+  - name: bitbucket
+    title: Bitbucker
 
-google-maps-key: AIzaSyBEJy4UvF-JfcNciWlvlznyDlUckcspiD4
-google-maps-url: https://maps.googleapis.com/maps/api/js?key=AIzaSyCOJwXN0eoyeFZ3cYtGzPLFw8zGhQ750Xk
-
-theme-plugins:
-  charts-c3:
-    name: c3.js Charts
-    files: [css, js]
-  maps-google:
-    name: Google Maps
-    files: [css, js]
-  input-mask:
-    name: Input Mask
-    files: [js]
-#  iconfonts:
-#    name: Iconfonts
-#    files: [css]
-#  prismjs:
-#    name: Code Highlight
-#    files: [css, js]
-#  fullcalendar:
-#    name: FullCalendar
-#    files: [css, js]
-#  weather:
-#    name: Weather
-#    files: [css]
+months_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+months_long: ['January', 'Febuary', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

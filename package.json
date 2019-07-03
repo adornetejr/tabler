@@ -1,63 +1,112 @@
 {
-  "name": "tabler-ui",
-  "description": "Premium and Open Source dashboard template with responsive and high quality UI. For Free!",
-  "version": "0.0.32",
-  "keywords": [
-    "css",
-    "sass",
-    "mobile-first",
-    "responsive",
-    "front-end",
-    "framework",
-    "admin",
-    "dashboard",
-    "admin panel"
-  ],
-  "homepage": "https://tabler.github.io",
+  "name": "tabler",
+  "version": "1.0.0",
+  "description": "Premium and Open Source dashboard template with responsive and high quality UI.",
   "scripts": {
-    "gulp-watch": "gulp watch",
-    "gulp-build": "gulp build",
-    "jekyll-watch": "jekyll build --watch",
-    "jekyll-serve": "jekyll serve --livereload",
-    "gh-pages": "./gh-pages.sh",
-    "dist": "gulp build && JEKYLL_ENV=production jekyll build --destination dist",
-    "publish-dist": "./gh-pages.sh",
-    "watch": "gulp build && npm-run-all --parallel gulp-watch jekyll-watch",
-    "serve": "gulp build && npm-run-all --parallel gulp-watch jekyll-serve"
+    "start": "npm-run-all --parallel browsersync watch html-watch",
+    "build": "npm-run-all html-build css js",
+    "bundlesize": "bundlesize",
+    "browsersync": "node build/browsersync.js",
+    "html-watch": "JEKYLL_ENV=development bundle exec jekyll build --watch",
+    "html-build": "JEKYLL_ENV=production bundle exec jekyll build",
+    "lint": "npm-run-all --parallel js-lint css-lint",
+    "css": "npm-run-all css-compile css-prefix css-minify",
+    "css-compile": "node-sass --output-style expanded --source-map true --source-map-contents true --precision 6 scss/tabler.scss dist/css/tabler.css",
+    "css-prefix": "postcss --config build/postcss.config.js --replace \"dist/css/*.css\" \"!dist/css/*.min.css\"",
+    "css-minify": "cleancss --level 1 --format breakWith=lf --source-map --source-map-inline-sources --output dist/css/tabler.min.css dist/css/tabler.css",
+    "css-lint": "stylelint \"scss/**/*.scss\" --cache --cache-location .cache/.stylelintcache",
+    "css-main": "npm-run-all css-compile css-prefix",
+    "css-main-build": "npm-run-all css-lint css-compile css-prefix css-minify",
+    "watch": "npm-run-all --parallel watch-*",
+    "watch-css": "nodemon --watch scss/ --ext scss --exec \"npm run css-main\"",
+    "watch-js": "nodemon --watch js/ --ext js --exec \"npm run js-compile-standalone\"",
+    "js": "npm-run-all js-compile js-minify",
+    "js-lint": "eslint --cache --cache-location .cache/.eslintcache js build/",
+    "js-compile": "npm-run-all --parallel js-compile-* --sequential js-minify",
+    "js-compile-standalone": "rollup --environment BUNDLE:false --config build/rollup.config.js --sourcemap",
+    "js-compile-bundle": "rollup --environment BUNDLE:true --config build/rollup.config.js --sourcemap",
+    "js-minify": "npm-run-all js-minify-standalone* js-minify-bundle",
+    "js-minify-standalone": "terser --compress typeofs=false --mangle --comments \"/^!/\" --source-map \"content=dist/js/tabler.js.map,includeSources,url=tabler.min.js.map\" --output dist/js/tabler.min.js dist/js/tabler.js",
+    "js-minify-bundle": "terser --compress typeofs=false --mangle --comments \"/^!/\" --source-map \"content=dist/js/tabler.bundle.js.map,includeSources,url=tabler.bundle.min.js.map\" --output dist/js/tabler.bundle.min.js dist/js/tabler.bundle.js",
+    "svg-svgo": "svgo -f svg/fe --pretty && svgo -f svg/brand --pretty",
+    "svg-iconfont": "mkdir -p svg-tmp && for i in svg/*/*.svg;do N=`echo $i | sed -e 's/^svg\\///g' | sed -e 's/\\\\.svg$//g' | sed -e 's/\\//-/g'`; echo $i; rsvg-convert $i -o svg-tmp/$N.svg -f svg -w 1000; done && svgo ./svg-tmp/*.svg --disable={removeViewBox} && icon-font-generator ./svg-tmp/*.svg -o fonts/tabler-webfont --html false --csstp build/tabler-webfont.hbs --csspath scss/fonts/_tabler-webfont.scss --center --normalize --name tabler-webfont --types svg,eot,ttf,woff,woff2 --json false && rm -rf svg-tmp && node build/generate-font-codepoints.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tabler/tabler.git"
   },
+  "keywords": [],
   "author": "codecalm",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/tabler/tabler/issues"
   },
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^5.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-rtlcss": "^1.2.0",
-    "gulp-sass": "^3.1.0",
-    "bootstrap": "^4.1.0",
-    "npm-run-all": "^4.1.2"
+  "engines": {
+    "node": ">=8"
   },
-  "dependencies": {},
   "files": [
-    "dist/",
-    "src/"
+    "dist/{css,js}/*.{css,js,map}",
+    "js/{src,dist}/**/*.{js,map}",
+    "scss/**/*.scss"
   ],
-  "browserslist": [
-    "last 1 major version",
-    ">= 1%",
-    "Chrome >= 45",
-    "Firefox >= 38",
-    "Edge >= 12",
-    "Explorer >= 10",
-    "iOS >= 9",
-    "Safari >= 9",
-    "Android >= 4.4",
-    "Opera >= 30"
+  "homepage": "https://tabler.io",
+  "devDependencies": {
+    "browser-sync": "2.26.7",
+    "bundlesize": "0.17.2",
+    "clean-css-cli": "4.3.0",
+    "cross-env": "5.2.0",
+    "eslint": "5.16.0",
+    "eslint-config-xo": "0.26.0",
+    "eslint-plugin-import": "2.17.3",
+    "eslint-plugin-unicorn": "9.1.0",
+    "http-server": "0.11.1",
+    "icon-font-generator": "2.1.10",
+    "node-sass": "4.12.0",
+    "nodemon": "1.19.1",
+    "npm-run-all": "4.1.5",
+    "popper.js": "1.15.0",
+    "postcss-cli": "6.1.2",
+    "rollup": "1.15.6",
+    "rollup-plugin-babel": "4.3.2",
+    "rollup-plugin-node-resolve": "5.0.3",
+    "shx": "0.3.2",
+    "stylelint": "10.1.0",
+    "stylelint-config-twbs-bootstrap": "0.3.1",
+    "svgo": "1.2.2",
+    "terser": "4.0.0",
+    "yaml": "1.6.0"
+  },
+  "dependencies": {
+    "apexcharts": "3.8.0",
+    "autosize": "4.0.2",
+    "bootstrap": "twbs/bootstrap#41fcd13",
+    "imask": "5.1.5",
+    "selectize": "0.12.6"
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/css/tabler.css",
+      "maxSize": "50 kB"
+    },
+    {
+      "path": "./dist/css/tabler.min.css",
+      "maxSize": "45 kB"
+    },
+    {
+      "path": "./dist/js/tabler.js",
+      "maxSize": "2 kB"
+    },
+    {
+      "path": "./dist/js/tabler.min.js",
+      "maxSize": "1.5 kB"
+    },
+    {
+      "path": "./dist/js/tabler.bundle.js",
+      "maxSize": "1.5 kB"
+    },
+    {
+      "path": "./dist/js/tabler.bundle.min.js",
+      "maxSize": "1.1 kB"
+    }
   ]
 }
